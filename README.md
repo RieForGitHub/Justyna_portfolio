@@ -44,9 +44,9 @@ To properly analyze the data, the first step was cleaning:
 6. Checking null values and deleting
 7. Checking type of data and changing to correct type
 8. Removing rest of columns
-All the steps of cleaning the data are outlined in the FILE.
+All the steps of cleaning the data are outlined in the [TXT FILE](https://github.com/RieForGitHub/Justyna_portfolio/blob/main/Audible_cleaning_data.txt).
 
 ## Data Analysis Using SQL
-The code used for data analysis is outlined in the FILE.
+The code used for data analysis is outlined in the [TXT FILE](https://github.com/RieForGitHub/Justyna_portfolio/blob/main/Audible_data_analysis.txt)
 
 
