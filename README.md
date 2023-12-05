@@ -1,4 +1,4 @@
-# Justyna_portfolio_AudibleDataset
+# Justyna_portfolio
 
 # Project 1: Audible Dataset - Data Analysis
 ## About
