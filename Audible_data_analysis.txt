@@ -1,0 +1,130 @@
+-- DATA ANALYSIS
+
+-- Searching popular authors (where stars > 0)
+SELECT author, avg(stars) as avg_stars, sum(ratings) as sum_ratings
+FROM `strong-radius-399410.Audible.Audible_cleaned`
+WHERE stars <> 0
+GROUP BY author, ratings, stars
+ORDER BY sum_ratings DESC, avg_stars DESC
+LIMIT 3;
+
+-- Searching popular narrators (where stars > 0)
+SELECT narrator, avg(stars) as avg_stars, sum(ratings) as sum_ratings
+FROM `strong-radius-399410.Audible.Audible_cleaned`
+WHERE stars <> 0
+GROUP BY narrator, ratings, stars
+ORDER BY sum_ratings DESC, avg_stars DESC
+LIMIT 3;
+
+SELECT DISTINCT narrator, ROUND(SUM((stars*ratings))/count(name),2) as popularity_narrator
+FROM `strong-radius-399410.Audible.Audible_cleaned`
+GROUP BY narrator
+ORDER BY popularity_narrator DESC;
+
+SELECT name, narrator, stars, ratings
+FROM `strong-radius-399410.Audible.Audible_cleaned`
+WHERE narrator = 'GaurGopalDas'
+OR narrator = 'DerekPerkins';
+
+-- checking influence of narrator on popularity of audiobook for more than 10 this same name of aubiodook
+SELECT
+  name,
+  COUNT(DISTINCT narrator) AS unique_narrators
+FROM
+  `strong-radius-399410.Audible.Audible_cleaned`
+GROUP BY
+  name
+HAVING
+  COUNT(DISTINCT narrator) > 1;
+
+SELECT b.name, a.narrator, a.ratings, a.stars
+FROM `strong-radius-399410.Audible.Audible_cleaned` as a
+JOIN `strong-radius-399410.Audible.Audible_narrators` as b
+ON a.name = b.name
+ORDER BY name;
+
+
+SELECT name, count(name) as counted_name
+FROM `strong-radius-399410.Audible.Audible_narrators2`
+GROUP BY name
+HAVING counted_name > 10;
+
+SELECT a.name, a.narrator, a.ratings, a.stars, b.counted_name
+FROM `strong-radius-399410.Audible.Audible_narrators2` as a
+JOIN `strong-radius-399410.Audible.Audible_narrators3` as b
+ON a.name = b.name
+ORDER BY name, narrator;
+
+SELECT DISTINCT narrator, name, ratings, stars
+FROM `strong-radius-399410.Audible.Audible_narrators4`
+ORDER BY name, narrator;
+
+-- time of during vs ratings
+SELECT time_of_during, ratings
+FROM `strong-radius-399410.Audible.Audible_cleaned`
+WHERE ratings > 0
+ORDER BY time_of_during, ratings;
+
+-- language vs ratings
+SELECT DISTINCT language, SUM(ratings) as sum_ratings,
+FROM `strong-radius-399410.Audible.Audible_cleaned`
+WHERE ratings > 0
+GROUP BY language
+ORDER BY sum_ratings DESC;
+-- table with languages and no ratings
+SELECT DISTINCT language, SUM(ratings) as sum_ratings,
+FROM `strong-radius-399410.Audible.Audible_cleaned`
+WHERE ratings = 0
+GROUP BY language
+ORDER BY sum_ratings DESC;
+
+-- price vs ratings
+SELECT price, ratings
+FROM `strong-radius-399410.Audible.Audible_cleaned`
+WHERE ratings > 0
+ORDER BY price, ratings;
+
+-- number of audiobooks vs date vs ratings
+SELECT releasedate, COUNT(DISTINCT name) as counted_names, SUM(ratings) as ratings
+FROM `strong-radius-399410.Audible.Audible_cleaned`
+GROUP BY releasedate;
+
+SELECT *
+FROM `strong-radius-399410.Audible.Audible_releasedate`
+ORDER BY releasedate, counted_names;
+
+-- popularity of higher lvls of audiobooks
+SELECT name, ratings , narrator, language, releasedate, time_of_during, price
+FROM `strong-radius-399410.Audible.Audible_cleaned`
+WHERE name LIKE '%Level%'
+AND ratings > 0
+OR name LIKE '%Book [0-9]%'
+AND ratings > 0
+OR name LIKE '%Volume%'
+AND ratings > 0
+OR name LIKE '%Vol.%'
+AND ratings > 0
+ORDER BY name;
+
+SELECT narrator, COUNT(narrator) as counted_narr
+FROM `strong-radius-399410.Audible.Audible_higherlevels`
+GROUP BY narrator
+HAVING COUNT(*) > 1;
+
+SELECT a.name, a.narrator, a.ratings, a.language, a.releasedate, a.time_of_during, a.price
+FROM `strong-radius-399410.Audible.Audible_higherlevels` as a
+JOIN `strong-radius-399410.Audible.Audible_higherlevels2` as b
+ON a.narrator = b.narrator
+WHERE b.counted_narr > 1
+ORDER BY a.name;
+
+-- Correlation Matrix
+SELECT
+    ROUND(CORR(price, stars),3) AS corr_price_stars,
+    ROUND(CORR(price, ratings),3) AS corr_price_ratings,
+    ROUND(CORR(price, time_of_during),3) AS corr_price_time,
+    ROUND(CORR(stars, ratings),3) AS corr_stars_ratings,
+    ROUND(CORR(stars, time_of_during),3) AS corr_stars_time,
+    ROUND(CORR(ratings, time_of_during),3) AS corr_ratings_time
+FROM `strong-radius-399410.Audible.Audible_cleaned`;
+

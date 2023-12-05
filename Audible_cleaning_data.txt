@@ -1,0 +1,75 @@
+-- DATA CLEANING
+
+-- deleting repeated Writtenby and Narratedby, changing format of time to minutes
+SELECT name, REPLACE(author, 'Writtenby:', '') as author, REPLACE(narrator, 'Narratedby:', '') as narrator, time, releasedate, language, stars, price,   
+  CAST(REGEXP_EXTRACT(time, r'(\d+) hr') AS INT64) AS hours,
+  CAST(REGEXP_EXTRACT(time, r'(\d+) min') AS INT64) AS minutes
+FROM `strong-radius-399410.Audible.Audible_table`;
+
+-- adding column with time only in minutes
+SELECT *, 
+  CASE 
+    WHEN hours is not null AND minutes is not null THEN
+    60*hours + minutes
+    WHEN minutes is null AND hours is not null THEN
+    60*hours
+    WHEN minutes is not null AND hours is null THEN
+    minutes
+    ELSE minutes
+  END AS time_of_during
+FROM `strong-radius-399410.Audible.Audible_table2`;
+
+-- checking language (used distinct earlier to check format of all languages) and preparing stars table
+SELECT *, lower(language) as audible_language,
+  CASE 
+    WHEN REGEXP_CONTAINS(stars, ',') THEN REGEXP_REPLACE(stars, ',', '') 
+    ELSE stars
+    end as new_stars
+FROM `strong-radius-399410.Audible.Audible_table3`;
+
+-- separating stars number and ratings
+SELECT *,
+  COALESCE(CAST(REGEXP_EXTRACT(new_stars, r'(\d+\.\d+|\d+) out') AS FLOAT64),0) AS stars_number,
+  COALESCE(CAST(REGEXP_EXTRACT(new_stars, r'(\d+) ratings') AS INT64),0) AS ratings
+FROM `strong-radius-399410.Audible.Audible_table4`;
+
+-- checking duplicates
+SELECT *, row_number() OVER (
+  PARTITION BY name, author, narrator, time, releasedate, language
+  ORDER BY name) AS row_num
+FROM `strong-radius-399410.Audible.Audible_table5`;
+
+SELECT *
+FROM `strong-radius-399410.Audible.Audible_table6`
+WHERE row_num = 1;
+
+-- Changing format of price
+SELECT *, 
+CAST(
+CASE
+  WHEN regexp_contains(price, ',') THEN regexp_replace(price, ',', '')
+  WHEN regexp_contains(price, 'Free') THEN regexp_replace(price, 'Free', '0')
+  ELSE price
+  END AS FLOAT64) AS audible_price
+FROM `strong-radius-399410.Audible.Audible_table7`;
+
+-- checking null values / deleting null values
+SELECT name, author, narrator,time_of_during, releasedate, audible_language, audible_price, stars_number, ratings
+FROM `strong-radius-399410.Audible.Audible_table8`
+WHERE name IS NULL OR author IS NULL OR narrator IS NULL OR releasedate IS NULL OR audible_language IS NULL OR audible_price IS NULL OR time_of_during IS NULL OR stars_number IS NULL OR ratings IS NULL;
+
+-- checking if data is correct (for ratings = 0 stars number is >0)
+SELECT stars_number, ratings
+FROM `strong-radius-399410.Audible.Audible_table8`
+WHERE stars_number > 0 AND ratings = 0;
+
+SELECT *,
+  CASE
+    WHEN ratings = 0 THEN 0
+    ELSE stars_number
+  END AS stars_updated,
+FROM `strong-radius-399410.Audible.Audible_table8`;
+
+-- removing rest of columns / changing names
+SELECT name, author, narrator,time_of_during, releasedate, audible_language as language, audible_price as price, stars_updated as stars, ratings
+FROM `strong-radius-399410.Audible.Audible_table9`;
