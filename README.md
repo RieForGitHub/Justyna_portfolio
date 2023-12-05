@@ -33,3 +33,6 @@ To enhance audiobook sales, identify new strategies, and better understand the a
 8. Is there any correlation between these variables which can improve sales?
 9. How frequently do people choose higher volumes of audiobooks, and do other factors influence this choice?
 
+## Steps Of Data Cleaning Using SQL
+
+
