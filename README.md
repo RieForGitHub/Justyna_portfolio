@@ -49,4 +49,10 @@ All the steps of cleaning the data are outlined in the [Audible_cleaning_data.tx
 ## Data Analysis Using SQL
 The code used for data analysis is outlined in the [Audible_data_analysis.txt](https://github.com/RieForGitHub/Justyna_portfolio/blob/main/Audible_data_analysis.txt). Data analysis was conducted using SQL from Google BigQuery.
 
+## Data Visualization with Tableau
+For summarizing and presenting the results clearly, I used Tableau to create dashboards for data visualization.
+
+The first dashboard illustrates that the narrator has an impact on the fluctuation of audiobook ratings. Additionally, it reveals a trend where people tend to purchase fewer books with higher volumes, even when the price and duration are similar.
+![Dashboard 1]([image.jpg](https://github.com/RieForGitHub/Justyna_portfolio/blob/main/Dashboard%201.png)https://github.com/RieForGitHub/Justyna_portfolio/blob/main/Dashboard%201.png)
+
 
