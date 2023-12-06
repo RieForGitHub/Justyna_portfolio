@@ -53,6 +53,6 @@ The code used for data analysis is outlined in the [Audible_data_analysis.txt](h
 For summarizing and presenting the results clearly, I used Tableau to create dashboards for data visualization.
 
 The first dashboard illustrates that the narrator has an impact on the fluctuation of audiobook ratings. Additionally, it reveals a trend where people tend to purchase fewer books with higher volumes, even when the price and duration are similar.
-![Dashboard 1]([image.jpg](https://github.com/RieForGitHub/Justyna_portfolio/blob/main/Dashboard%201.png)https://github.com/RieForGitHub/Justyna_portfolio/blob/main/Dashboard%201.png)
+![Dashboard 1](https://github.com/RieForGitHub/Justyna_portfolio/blob/main/Dashboard%201.png)
 
 
